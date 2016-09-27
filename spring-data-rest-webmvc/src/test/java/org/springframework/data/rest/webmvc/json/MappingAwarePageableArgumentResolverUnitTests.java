@@ -57,7 +57,7 @@ public class MappingAwarePageableArgumentResolverUnitTests {
 	}
 
 	/**
-	 * @see DATAREST-906
+	 * @see DATAREST-906, DATACMNS-918
 	 */
 	@Test
 	public void resolveArgumentShouldReturnTranslatedPageable() throws Exception {
@@ -65,7 +65,7 @@ public class MappingAwarePageableArgumentResolverUnitTests {
 		Sort translated = new Sort("world");
 		Pageable pageable = new PageRequest(0, 1, Direction.ASC, "hello");
 
-		when(delegate.resolveArgument(parameter, modelAndViewContainer, webRequest, binderFactory)).thenReturn(pageable);
+		when(delegate.resolveArgument(parameter,  webRequest)).thenReturn(pageable);
 		when(translator.translateSort(pageable.getSort(), parameter, webRequest)).thenReturn(translated);
 
 		Pageable result = resolver.resolveArgument(parameter, modelAndViewContainer, webRequest, binderFactory);
@@ -76,14 +76,14 @@ public class MappingAwarePageableArgumentResolverUnitTests {
 	}
 
 	/**
-	 * @see DATAREST-906
+	 * @see DATAREST-906, DATACMNS-918
 	 */
 	@Test
 	public void resolveArgumentShouldReturnPageableWithoutSort() throws Exception {
 
 		Pageable pageable = new PageRequest(0, 1);
 
-		when(delegate.resolveArgument(parameter, modelAndViewContainer, webRequest, binderFactory)).thenReturn(pageable);
+		when(delegate.resolveArgument(parameter,  webRequest)).thenReturn(pageable);
 
 		Pageable result = resolver.resolveArgument(parameter, modelAndViewContainer, webRequest, binderFactory);
 
@@ -93,12 +93,12 @@ public class MappingAwarePageableArgumentResolverUnitTests {
 	}
 
 	/**
-	 * @see DATAREST-906
+	 * @see DATAREST-906, DATACMNS-918
 	 */
 	@Test
 	public void resolveArgumentShouldReturnNoPageable() throws Exception {
 
-		Pageable result = resolver.resolveArgument(parameter, modelAndViewContainer, webRequest, binderFactory);
+		Pageable result = resolver.resolveArgument(parameter, webRequest);
 
 		assertThat(result, is(nullValue()));
 	}
