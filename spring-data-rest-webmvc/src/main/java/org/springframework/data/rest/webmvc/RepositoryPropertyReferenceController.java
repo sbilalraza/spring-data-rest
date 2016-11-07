@@ -95,9 +95,12 @@ class RepositoryPropertyReferenceController extends AbstractRepositoryRestContro
 		this.repositoryInvokerFactory = repositoryInvokerFactory;
 	}
 
-	/* 
+	/*
 	 * (non-Javadoc)
-	 * @see org.springframework.context.ApplicationEventPublisherAware#setApplicationEventPublisher(org.springframework.context.ApplicationEventPublisher)
+	 * 
+	 * @see org.springframework.context.ApplicationEventPublisherAware#
+	 * setApplicationEventPublisher(org.springframework.context.
+	 * ApplicationEventPublisher)
 	 */
 	@Override
 	public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
@@ -170,9 +173,11 @@ class RepositoryPropertyReferenceController extends AbstractRepositoryRestContro
 					prop.accessor.setProperty(prop.property, null);
 				}
 
-				publisher.publishEvent(new BeforeLinkDeleteEvent(prop.accessor.getBean(), prop.propertyValue));
+				publisher.publishEvent(new BeforeLinkDeleteEvent(prop.accessor.getBean(), prop.propertyValue,
+						prop.property.getField().getName()));
 				Object result = repoMethodInvoker.invokeSave(prop.accessor.getBean());
-				publisher.publishEvent(new AfterLinkDeleteEvent(result, prop.propertyValue));
+				publisher.publishEvent(
+						new AfterLinkDeleteEvent(result, prop.propertyValue, prop.property.getField().getName()));
 
 				return null;
 			}
@@ -232,11 +237,11 @@ class RepositoryPropertyReferenceController extends AbstractRepositoryRestContro
 		return ControllerUtils.toResponseEntity(HttpStatus.OK, headers, responseResource);
 	}
 
-	@RequestMapping(value = BASE_MAPPING, method = GET,
-			produces = { SPRING_DATA_COMPACT_JSON_VALUE, TEXT_URI_LIST_VALUE })
+	@RequestMapping(value = BASE_MAPPING, method = GET, produces = { SPRING_DATA_COMPACT_JSON_VALUE,
+			TEXT_URI_LIST_VALUE })
 	public ResponseEntity<ResourceSupport> followPropertyReferenceCompact(RootResourceInformation repoRequest,
 			@BackendId Serializable id, @PathVariable String property, PersistentEntityResourceAssembler assembler)
-					throws Exception {
+			throws Exception {
 
 		ResponseEntity<ResourceSupport> response = followPropertyReference(repoRequest, id, property, assembler);
 
@@ -301,7 +306,8 @@ class RepositoryPropertyReferenceController extends AbstractRepositoryRestContro
 				if (prop.property.isCollectionLike()) {
 
 					Collection<Object> collection = AUGMENTING_METHODS.contains(requestMethod)
-							? (Collection<Object>) prop.propertyValue : CollectionFactory.createCollection(propertyType, 0);
+							? (Collection<Object>) prop.propertyValue
+							: CollectionFactory.createCollection(propertyType, 0);
 
 					// Add to the existing collection
 					for (Link l : source.getLinks()) {
@@ -314,7 +320,7 @@ class RepositoryPropertyReferenceController extends AbstractRepositoryRestContro
 
 					Map<String, Object> map = AUGMENTING_METHODS.contains(requestMethod)
 							? (Map<String, Object>) prop.propertyValue
-							: CollectionFactory.<String, Object> createMap(propertyType, 0);
+							: CollectionFactory.<String, Object>createMap(propertyType, 0);
 
 					// Add to the existing collection
 					for (Link l : source.getLinks()) {
@@ -326,7 +332,8 @@ class RepositoryPropertyReferenceController extends AbstractRepositoryRestContro
 				} else {
 
 					if (HttpMethod.PATCH.equals(requestMethod)) {
-						throw new HttpRequestMethodNotSupportedException(HttpMethod.PATCH.name(), new String[] { "PATCH" },
+						throw new HttpRequestMethodNotSupportedException(HttpMethod.PATCH.name(),
+								new String[] { "PATCH" },
 								"Cannot PATCH a reference to this singular property since the property type is not a List or a Map.");
 					}
 
@@ -339,9 +346,11 @@ class RepositoryPropertyReferenceController extends AbstractRepositoryRestContro
 					prop.accessor.setProperty(prop.property, propVal);
 				}
 
-				publisher.publishEvent(new BeforeLinkSaveEvent(prop.accessor.getBean(), prop.propertyValue));
+				publisher.publishEvent(new BeforeLinkSaveEvent(prop.accessor.getBean(), prop.propertyValue,
+						prop.property.getField().getName()));
 				Object result = invoker.invokeSave(prop.accessor.getBean());
-				publisher.publishEvent(new AfterLinkSaveEvent(result, prop.propertyValue));
+				publisher.publishEvent(
+						new AfterLinkSaveEvent(result, prop.propertyValue, prop.property.getField().getName()));
 
 				return null;
 			}
@@ -355,7 +364,7 @@ class RepositoryPropertyReferenceController extends AbstractRepositoryRestContro
 	@RequestMapping(value = BASE_MAPPING + "/{propertyId}", method = DELETE)
 	public ResponseEntity<ResourceSupport> deletePropertyReferenceId(final RootResourceInformation repoRequest,
 			@BackendId Serializable id, @PathVariable String property, final @PathVariable String propertyId)
-					throws Exception {
+			throws Exception {
 
 		final RepositoryInvoker invoker = repoRequest.getInvoker();
 
@@ -398,9 +407,11 @@ class RepositoryPropertyReferenceController extends AbstractRepositoryRestContro
 					prop.accessor.setProperty(prop.property, null);
 				}
 
-				publisher.publishEvent(new BeforeLinkDeleteEvent(prop.accessor.getBean(), prop.propertyValue));
+				publisher.publishEvent(new BeforeLinkDeleteEvent(prop.accessor.getBean(), prop.propertyValue,
+						prop.property.getField().getName()));
 				Object result = invoker.invokeSave(prop.accessor.getBean());
-				publisher.publishEvent(new AfterLinkDeleteEvent(result, prop.propertyValue));
+				publisher.publishEvent(
+						new AfterLinkDeleteEvent(result, prop.propertyValue, prop.property.getField().getName()));
 
 				return null;
 			}
@@ -422,7 +433,8 @@ class RepositoryPropertyReferenceController extends AbstractRepositoryRestContro
 	}
 
 	private ResourceSupport doWithReferencedProperty(RootResourceInformation resourceInformation, Serializable id,
-			String propertyPath, Function<ReferencedProperty, ResourceSupport> handler, HttpMethod method) throws Exception {
+			String propertyPath, Function<ReferencedProperty, ResourceSupport> handler, HttpMethod method)
+			throws Exception {
 
 		ResourceMetadata metadata = resourceInformation.getResourceMetadata();
 		PropertyAwareResourceMapping mapping = metadata.getProperty(propertyPath);

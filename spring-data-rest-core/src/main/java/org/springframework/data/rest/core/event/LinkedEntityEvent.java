@@ -26,6 +26,7 @@ public abstract class LinkedEntityEvent extends RepositoryEvent {
 	private static final long serialVersionUID = -9071648572128698903L;
 	private final Object linked;
 
+	private final String relation;
 	/**
 	 * Creates a new {@link LinkedEntityEvent} for th given source and linked instance.
 	 * 
@@ -36,6 +37,14 @@ public abstract class LinkedEntityEvent extends RepositoryEvent {
 
 		super(source);
 		this.linked = linked;
+		this.relation=null;
+	}
+	
+	public LinkedEntityEvent(Object source, Object linked, String relation) {
+
+		super(source);
+		this.linked = linked;
+		this.relation=relation;
 	}
 
 	/**
@@ -45,5 +54,9 @@ public abstract class LinkedEntityEvent extends RepositoryEvent {
 	 */
 	public Object getLinked() {
 		return linked;
+	}
+	
+	public String getRelation(){
+		return relation;
 	}
 }

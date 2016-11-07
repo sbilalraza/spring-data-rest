@@ -12,4 +12,8 @@ public class BeforeLinkSaveEvent extends LinkedEntityEvent {
 	public BeforeLinkSaveEvent(Object source, Object linked) {
 		super(source, linked);
 	}
+	
+	public BeforeLinkSaveEvent(Object source, Object linked,String relation) {
+		super(source, linked, relation);
+	}
 }

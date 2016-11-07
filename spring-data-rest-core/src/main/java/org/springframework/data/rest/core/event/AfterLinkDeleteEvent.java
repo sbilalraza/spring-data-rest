@@ -12,4 +12,7 @@ public class AfterLinkDeleteEvent extends LinkedEntityEvent {
 	public AfterLinkDeleteEvent(Object source, Object linked) {
 		super(source, linked);
 	}
+	public AfterLinkDeleteEvent(Object source, Object linked, String relation) {
+		super(source, linked, relation);
+	}
 }

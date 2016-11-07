@@ -12,4 +12,8 @@ public class AfterLinkSaveEvent extends LinkedEntityEvent {
 	public AfterLinkSaveEvent(Object source, Object child) {
 		super(source, child);
 	}
+	
+	public AfterLinkSaveEvent(Object source, Object child,String relation) {
+		super(source, child, relation);
+	}
 }

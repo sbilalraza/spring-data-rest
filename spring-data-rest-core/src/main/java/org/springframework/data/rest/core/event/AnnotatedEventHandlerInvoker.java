@@ -45,7 +45,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.ReflectionUtils;
 
 /**
- * Component to discover annotated repository event handlers and trigger them on {@link ApplicationEvent}s.
+ * Component to discover annotated repository event handlers and trigger them on
+ * {@link ApplicationEvent}s.
  * 
  * @author Jon Brisbin
  * @author Oliver Gierke
@@ -59,7 +60,10 @@ public class AnnotatedEventHandlerInvoker implements ApplicationListener<Reposit
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.springframework.context.ApplicationListener#onApplicationEvent(org.springframework.context.ApplicationEvent)
+	 * 
+	 * @see
+	 * org.springframework.context.ApplicationListener#onApplicationEvent(org.
+	 * springframework.context.ApplicationEvent)
 	 */
 	@Override
 	public void onApplicationEvent(RepositoryEvent event) {
@@ -83,6 +87,9 @@ public class AnnotatedEventHandlerInvoker implements ApplicationListener<Reposit
 
 			if (event instanceof LinkedEntityEvent) {
 				parameters.add(((LinkedEntityEvent) event).getLinked());
+				if (handlerMethod.method.getParameterTypes().length > 2) {
+					parameters.add(((LinkedEntityEvent) event).getRelation());
+				}
 			}
 
 			if (LOG.isDebugEnabled()) {
@@ -95,7 +102,9 @@ public class AnnotatedEventHandlerInvoker implements ApplicationListener<Reposit
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessBeforeInitialization(java.lang.Object, java.lang.String)
+	 * 
+	 * @see org.springframework.beans.factory.config.BeanPostProcessor#
+	 * postProcessBeforeInitialization(java.lang.Object, java.lang.String)
 	 */
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -104,7 +113,9 @@ public class AnnotatedEventHandlerInvoker implements ApplicationListener<Reposit
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.springframework.beans.factory.config.BeanPostProcessor#postProcessAfterInitialization(java.lang.Object, java.lang.String)
+	 * 
+	 * @see org.springframework.beans.factory.config.BeanPostProcessor#
+	 * postProcessAfterInitialization(java.lang.Object, java.lang.String)
 	 */
 	@Override
 	public Object postProcessAfterInitialization(final Object bean, String beanName) throws BeansException {
@@ -120,7 +131,10 @@ public class AnnotatedEventHandlerInvoker implements ApplicationListener<Reposit
 
 			/*
 			 * (non-Javadoc)
-			 * @see org.springframework.util.ReflectionUtils.MethodCallback#doWith(java.lang.reflect.Method)
+			 * 
+			 * @see
+			 * org.springframework.util.ReflectionUtils.MethodCallback#doWith(
+			 * java.lang.reflect.Method)
 			 */
 			@Override
 			public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
@@ -142,13 +156,18 @@ public class AnnotatedEventHandlerInvoker implements ApplicationListener<Reposit
 	}
 
 	/**
-	 * Inspects the given handler method for an annotation of the given type. If the annotation present an
-	 * {@link EventHandlerMethod} is registered for the given {@link RepositoryEvent} type.
+	 * Inspects the given handler method for an annotation of the given type. If
+	 * the annotation present an {@link EventHandlerMethod} is registered for
+	 * the given {@link RepositoryEvent} type.
 	 * 
-	 * @param handler must not be {@literal null}.
-	 * @param method must not be {@literal null}.
-	 * @param annotationType must not be {@literal null}.
-	 * @param eventType must not be {@literal null}.
+	 * @param handler
+	 *            must not be {@literal null}.
+	 * @param method
+	 *            must not be {@literal null}.
+	 * @param annotationType
+	 *            must not be {@literal null}.
+	 * @param eventType
+	 *            must not be {@literal null}.
 	 */
 	private <T extends Annotation> void inspect(Object handler, Method method, Class<T> annotationType,
 			Class<? extends RepositoryEvent> eventType) {
@@ -191,11 +210,13 @@ public class AnnotatedEventHandlerInvoker implements ApplicationListener<Reposit
 
 		/*
 		 * (non-Javadoc)
+		 * 
 		 * @see java.lang.Object#toString()
 		 */
 		@Override
 		public String toString() {
-			return String.format("EventHandlerMethod{ targetType=%s, method=%s, handler=%s }", targetType, method, handler);
+			return String.format("EventHandlerMethod{ targetType=%s, method=%s, handler=%s }", targetType, method,
+					handler);
 		}
 	}
 }
